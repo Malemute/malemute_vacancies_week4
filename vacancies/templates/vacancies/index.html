@@ -16,10 +16,10 @@
           </form>
           <p>Например: 
             <a href="{% url 'search' %}?s=Python" class="text-dark border-bottom border-dark m-1 text-decoration-none">Python</a>
-            <a href="#" class="text-dark border-bottom border-dark m-1 text-decoration-none">Flask</a> 
-            <a href="#" class="text-dark border-bottom border-dark m-1 text-decoration-none">Django</a> 
-            <a href="#" class="text-dark border-bottom border-dark m-1 text-decoration-none">Парсинг</a> 
-            <a href="#" class="text-dark border-bottom border-dark m-1 text-decoration-none">ML</a> 
+            <a href="{% url 'search' %}?s=Flask" class="text-dark border-bottom border-dark m-1 text-decoration-none">Flask</a>
+            <a href="{% url 'search' %}?s=Django" class="text-dark border-bottom border-dark m-1 text-decoration-none">Django</a>
+            <a href="{% url 'search' %}?s=Парсинг" class="text-dark border-bottom border-dark m-1 text-decoration-none">Парсинг</a>
+            <a href="{% url 'search' %}?s=ML" class="text-dark border-bottom border-dark m-1 text-decoration-none">ML</a>
 
           </p>
         </div>
@@ -53,7 +53,7 @@
           {% for company in companies %}
         <div class="col-6 col-md-6 col-lg-3">
           <div class="card pt-4 text-center mb-4">
-            <a href="{% url 'company_page' company.id_comp %}" style="max-width: 150px;" class="mx-auto d-block">
+            <a href="{% url 'company_page' company.id %}" style="max-width: 150px;" class="mx-auto d-block">
                 {% if company.logo %}
               <img class="mx-auto d-block mw-100" src="{{ company.logo.url }}" alt="My image">
                     {% else %}
@@ -61,7 +61,7 @@
                 {% endif %}
             </a>
             <div class="card-body">
-              <p class="card-text"><a href="{% url 'company_page' company.id_comp %}">{{ company.vacancies.count }} вакансий</a></p>
+              <p class="card-text"><a href="{% url 'company_page' company.id %}">{{ company.vacancies.count }} вакансий</a></p>
             </div>
           </div>
         </div>

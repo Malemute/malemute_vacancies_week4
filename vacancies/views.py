@@ -1,11 +1,12 @@
 from django.contrib.auth.views import LoginView
-from django.db.models import Count
+from django.db.models import Count, Q
 from django.http import HttpResponseBadRequest, HttpResponseForbidden,  \
     HttpResponseNotFound, HttpResponseServerError
 from django.shortcuts import get_object_or_404, render
 from django.views import View
 from django.views.generic import CreateView, ListView, UpdateView
 
+from vacancies.forms import SignupForm
 from vacancies.models import Company, Specialty, Vacancy
 
 
@@ -64,14 +65,12 @@ class VacancyCatView(View):
 
 class SearchView(View):
     def get(self, request):
-        return render(
-            request,
-            'vacancies/search.html',
-            context={
-
-            }
-        )
-
+        search = request.GET.get('s', '')
+        vacancies = Vacancy.objects.filter(Q(title__icontains=search) | Q(description__icontains=search))
+        if vacancies:
+            return render(request, 'vacancies/vacancy-list.html', context={'vacancies': vacancies})
+        else:
+            return render(request, 'not-found404.html')
 
 class VacancyView(View):
     def get(self, request, id):

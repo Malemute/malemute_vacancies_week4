@@ -2,8 +2,7 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 
-from .choices import StatusChoices, GradeChoices
-from vacancies.models import Application, Company, Vacancy, Speciality, Resume
+from vacancies.models import Application, Company, Vacancy, Specialty, Resume
 
 
 class SignupForm(UserCreationForm):

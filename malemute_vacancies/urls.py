@@ -13,11 +13,16 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+from django.conf import settings
+from django.conf.urls.static import static
 from django.contrib import admin
+from django.contrib.auth.views import LogoutView
 from django.urls import path
 
 from vacancies.views import CompanyView
 from vacancies.views import MainView
+from vacancies.views import MyLoginView
+from vacancies.views import MySignupView
 from vacancies.views import SearchView
 from vacancies.views import VacancyCatView
 from vacancies.views import VacancyListView
@@ -39,3 +44,6 @@ urlpatterns = [
     path('vacancies/<int:id>', VacancyView.as_view(), name='vacancy_info'),
 
 ]
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL,
+                          document_root=settings.MEDIA_ROOT)

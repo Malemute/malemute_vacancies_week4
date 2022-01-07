@@ -11,24 +11,25 @@ def import_data():
         Specialty.objects.create(
             code=speciality['code'],
             title=speciality['title'],
+            # picture=f'media/speciality_images/specty_{speciality["code"]}.png',
             picture=f'specty_{speciality["code"]}.png',
         )
 
     for company in data.companies:
         Company.objects.create(
-            id_comp=company['id'],
             name=company['title'],
             location=company['location'],
             description=company['description'],
             employee_count=company['employee_count'],
-            logo=f'media/static/logo{company["id"]}.png',
+            # logo=f'media/company_images/logo{company["id"]}.png',
+            logo=f'logo{company["id"]}.png',
         )
 
     for job in data.jobs:
         specialty = Specialty.objects.get(code=job['specialty'])
-        company = Company.objects.get(id_comp=job['company'])
+        id_comp = int(job['company']) - 1
+        company = Company.objects.get(name=data.companies[id_comp]['title'])
         Vacancy.objects.create(
-            id_job=job['id'],
             title=job['title'],
             specialty=specialty,
             company=company,
