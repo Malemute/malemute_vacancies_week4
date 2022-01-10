@@ -21,27 +21,45 @@ from django.urls import path
 
 from vacancies.views import CompanyView
 from vacancies.views import MainView
+from vacancies.views import MyCompanyLetsStartView
+from vacancies.views import MyCompanyVacancyCreateView
+from vacancies.views import MyCompanyVacancyEditView
+from vacancies.views import MyCompanyVacanciesView
+from vacancies.views import MyCompanyView
 from vacancies.views import MyLoginView
 from vacancies.views import MySignupView
+from vacancies.views import ResumeEditView
+from vacancies.views import ResumeView
 from vacancies.views import SearchView
 from vacancies.views import VacancyCatView
 from vacancies.views import VacancyListView
-from vacancies.views import VacancyView
-
+from vacancies.views import VacancyInfoView
+# from vacancies.views import VacancyView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', MainView.as_view(), name='main_page'),
+    path('vacancies/', VacancyListView.as_view(), name='vacancies_page'),
+    path('vacancies/cat/<str:category_name>', VacancyCatView.as_view(), name='category_page'),
     path('companies/<int:id>', CompanyView.as_view(), name='company_page'),
+    path('vacancies/<int:id>', VacancyInfoView.as_view(), name='vacancy_info'),
+    # path('vacancies/<int:id>', VacancyView.as_view(), name='vacancy_info'),
+
+    path('mycompany/letsstart/', MyCompanyLetsStartView.as_view(), name='my_company_letsstart'),
+    path('mycompany/', MyCompanyView.as_view(), name='my_company'),
+
+    path('mycompany/vacancies', MyCompanyVacanciesView.as_view(), name='my_company_vacancies'),
+
+    path('mycompany/vacancies/<int:pk>', MyCompanyVacancyEditView.as_view(), name='my_company_vacancy_edit'),
+    path('mycompany/vacancies/create/', MyCompanyVacancyCreateView.as_view(), name='my_company_vacancy_create'),
 
     path('login/', MyLoginView.as_view(), name='login'),
     path('logout/', LogoutView.as_view(), name='logout'),
     path('signup/', MySignupView.as_view(), name='signup'),
 
-    path('search', SearchView.as_view(), name='search'),
-    path('vacancies/', VacancyListView.as_view(), name='vacancies_page'),
-    path('vacancies/cat/<str:category_name>', VacancyCatView.as_view(), name='category_page'),
-    path('vacancies/<int:id>', VacancyView.as_view(), name='vacancy_info'),
+    path('search/', SearchView.as_view(), name='search'),
+    path('myresume/', ResumeView.as_view(), name='resume'),
+    path('myresume/create/', ResumeEditView.as_view(), name='edit_resume'),
 
 ]
 if settings.DEBUG:

@@ -9,7 +9,6 @@ class Company(models.Model):
     name = models.CharField(max_length=60, default='')
     location = models.CharField(max_length=120, default='', null=True, blank=True)
     logo = models.ImageField(upload_to=MEDIA_STATIC_DIR, null=True, blank=True)
-    print("MEDIA_STATIC_DIR = ", MEDIA_STATIC_DIR)
     description = models.TextField(default='', null=True, blank=True)
     employee_count = models.IntegerField(null=True, blank=True, default=0)
     owner = models.ForeignKey(User, on_delete=models.CASCADE, default=None, null=True, blank=True,
@@ -43,7 +42,7 @@ class Vacancy(models.Model):
 
 
 class Application(models.Model):
-    written_username = models.CharField(max_length=20)
+    written_username = models.CharField(max_length=64)
     written_phone = models.CharField(max_length=12)
     written_cover_letter = models.TextField()
     vacancy = models.ForeignKey(Vacancy, on_delete=models.CASCADE, related_name='applications')

@@ -12,7 +12,7 @@ def import_data():
             code=speciality['code'],
             title=speciality['title'],
             # picture=f'media/speciality_images/specty_{speciality["code"]}.png',
-            picture=f'specty_{speciality["code"]}.png',
+            picture=f'specialty_images/specty_{speciality["code"]}.png',
         )
 
     for company in data.companies:
@@ -22,7 +22,7 @@ def import_data():
             description=company['description'],
             employee_count=company['employee_count'],
             # logo=f'media/company_images/logo{company["id"]}.png',
-            logo=f'logo{company["id"]}.png',
+            logo=f'company_images/logo{company["id"]}.png',
         )
 
     for job in data.jobs:
