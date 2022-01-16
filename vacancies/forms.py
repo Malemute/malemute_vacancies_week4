@@ -3,7 +3,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.forms import ModelForm
 
-from vacancies.models import Application, Company, Vacancy, Specialty, Resume
+from vacancies.models import Application, Company, Vacancy, Resume
 
 
 class SignupForm(UserCreationForm):

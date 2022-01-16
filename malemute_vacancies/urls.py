@@ -19,22 +19,23 @@ from django.contrib import admin
 from django.contrib.auth.views import LogoutView
 from django.urls import path
 
+from accounts.views import MyLoginView
+from accounts.views import MySignupView
+
 from vacancies.views import CompanyView
 from vacancies.views import MainView
+from vacancies.views import MyCompanyCreateView
 from vacancies.views import MyCompanyLetsStartView
 from vacancies.views import MyCompanyVacancyCreateView
 from vacancies.views import MyCompanyVacancyEditView
 from vacancies.views import MyCompanyVacanciesView
 from vacancies.views import MyCompanyView
-from vacancies.views import MyLoginView
-from vacancies.views import MySignupView
 from vacancies.views import ResumeEditView
 from vacancies.views import ResumeView
 from vacancies.views import SearchView
 from vacancies.views import VacancyCatView
 from vacancies.views import VacancyListView
 from vacancies.views import VacancyInfoView
-# from vacancies.views import VacancyView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -46,6 +47,7 @@ urlpatterns = [
     # path('vacancies/<int:id>', VacancyView.as_view(), name='vacancy_info'),
 
     path('mycompany/letsstart/', MyCompanyLetsStartView.as_view(), name='my_company_letsstart'),
+    path('mycompany/create/', MyCompanyCreateView.as_view(), name='my_company_create'),
     path('mycompany/', MyCompanyView.as_view(), name='my_company'),
 
     path('mycompany/vacancies', MyCompanyVacanciesView.as_view(), name='my_company_vacancies'),

@@ -1,6 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
-from django.contrib.auth.views import LoginView
 from django.db.models import Count, Q
 from django.http import HttpResponseBadRequest, HttpResponseForbidden,  \
     HttpResponseNotFound, HttpResponseServerError
@@ -9,8 +8,7 @@ from django.urls import reverse
 from django.views import View
 from django.views.generic import CreateView, ListView, UpdateView
 
-from vacancies.forms import ResumeForm
-from vacancies.forms import ApplicationForm, MyCompanyForm, MyCompanyVacancyForm, ResumeForm, SignupForm
+from vacancies.forms import ApplicationForm, MyCompanyForm, MyCompanyVacancyForm, ResumeForm
 from vacancies.models import Application, Company, Resume, Specialty, Vacancy
 
 
@@ -32,17 +30,47 @@ class CompanyView(View):
             context={'vacancies': vacancies, 'company': company})
 
 
+class MyCompanyCreateView(View):
+    def get(self, request):
+        user = request.user
+        if Company.objects.filter(owner=user):
+            return redirect('my_company')
+
+        return render(request, 'vacancies/mycompany_create.html')
+
+    def post(self, request):
+        form = MyCompanyForm(request.POST, request.FILES)
+        if form.is_valid():
+            data = form.cleaned_data
+
+            # user = request.user
+            company = Company.objects.create(name=data['name'], owner=request.user)
+            # company = Company.objects.get(owner=user)
+
+            # company.name = data['name']
+            company.location = data['location']
+            company.employee_count = data['employee_count']
+            company.description = data['description']
+            company.logo = data['logo']
+
+            company.save()
+            return redirect('my_company')
+
+        else:
+            form.add_error('name', 'Имя компании должно быть заполнено!')
+            return render(request, 'vacancies/mycompany_create.html', context={'form': form})
+
+
 class MyCompanyLetsStartView(View):
     def get(self, request):
         user = request.user
 
         if user.company.all():
             return redirect('my_company')
-        return render(request, 'vacancies/company-create.html')
+        return render(request, 'vacancies/my_company_letsstart.html')
 
     def post(self, request):
-        Company.objects.create(name='Введите название Вашей компании', owner=request.user)
-        return redirect('my_company')
+        return redirect('my_company_create')
 
 
 class MyCompanyView(LoginRequiredMixin, View):
@@ -52,7 +80,8 @@ class MyCompanyView(LoginRequiredMixin, View):
     def get(self, request):
         user = request.user
         try:
-            company = Company.objects.get(owner=user.id)
+            # company = Company.objects.get(owner=user.id)
+            company = Company.objects.get(owner=user)
             return render(request, 'vacancies/mycompany.html', context={'company': company})
 
         except Company.DoesNotExist:
@@ -141,21 +170,6 @@ class MyCompanyVacancyCreateView(LoginRequiredMixin, CreateView):
         return super().form_invalid(form)
 
 
-class MyLoginView(LoginView):
-    redirect_authenticated_user = True
-    template_name = 'vacancies/login.html'
-
-
-class MySignupView(CreateView):
-    form_class = SignupForm
-    template_name = 'vacancies/signup.html'
-    success_url = '/login'
-
-    def form_valid(self, form):
-        form.save()
-        return super(MySignupView, self).form_valid(form)
-
-
 class ResumeEditView(LoginRequiredMixin, View):
     login_url = 'login'
     redirect_field_name = 'redirect_to'
@@ -170,10 +184,17 @@ class ResumeEditView(LoginRequiredMixin, View):
         if form.is_valid():
             data = form.cleaned_data
 
-            Resume.objects.create(name=data['name'], surname=data['surname'], status=data['status'],
-                                  salary=data['salary'], specialty=data['specialty'], grade=data['grade'],
-                                  education=data['education'], experience=data['experience'],
-                                  portfolio=data['portfolio'], user=request.user)
+            Resume.objects.create(
+                name=data['name'],
+                surname=data['surname'],
+                status=data['status'],
+                salary=data['salary'],
+                specialty=data['specialty'],
+                grade=data['grade'],
+                education=data['education'],
+                experience=data['experience'],
+                portfolio=data['portfolio'],
+                user=request.user)
             return redirect('resume')
         return render(request, 'vacancies/resume-edit.html', context={'form': form})
 
@@ -241,7 +262,7 @@ class VacancyCatView(View):
 class VacancyInfoView(View):
     def get(self, request, id):
         vacancy = get_object_or_404(Vacancy, pk=id)
-        return render(request, 'vacancies/vacancy.html', context={'vacancy': vacancy})
+        return render(request, 'vacancies/vacancy.html', context={'vacancy': vacancy, 'user': request.user})
 
     def post(self, request, id):
         vacancy = get_object_or_404(Vacancy, pk=id)
@@ -252,17 +273,12 @@ class VacancyInfoView(View):
             written_phone = data['written_phone']
             written_cover_letter = data['written_cover_letter']
 
-            # проверить, есть ли в базе юзер
-            if request.user.is_authenticated:
-                user = User.objects.get(id=request.user.id)
-                Application.objects.create(written_username=written_username, written_phone=written_phone,
-                                           written_cover_letter=written_cover_letter, vacancy=vacancy, user=user)
-                return render(request, 'vacancies/send_vacancy_success.html', )
-            else:
-                form.add_error('written_username', 'Для отправки заявки необходимо войти в учетную запись')
+            user = User.objects.get(id=request.user.id)
+            Application.objects.create(written_username=written_username, written_phone=written_phone,
+                                       written_cover_letter=written_cover_letter, vacancy=vacancy, user=user)
+            return render(request, 'vacancies/send_vacancy_success.html', )
 
         return render(request, 'vacancies/vacancy.html', context={'vacancy': vacancy, 'form': form})
-
 
 
 class SearchView(View):
